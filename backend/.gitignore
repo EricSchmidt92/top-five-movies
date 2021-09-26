@@ -2,3 +2,5 @@ node_modules
 .prettierrc
 .vscode
 dist
+.env
+environment.d.ts
