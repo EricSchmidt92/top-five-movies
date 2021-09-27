@@ -1,30 +1,44 @@
 import express, { Request, Response } from 'express';
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
+import passport from 'passport';
 
 const router: Router = express.Router();
 // import db from '../db';
 const db = require('../db');
 
-// GETTING ALL
-router.get('/', async (_req: Request, res: Response) => {
-  try {
-    // const users = await User.find();
-    // res.json(users);
-
-    res.send('route for all users');
-  } catch (error) {
-    let message = 'Failed to get Users';
-    if (error instanceof Error) {
-      message = error.message;
-    }
-    res.status(500).json({ message });
-  }
+// * GET LOGGED IN USER
+router.get('/', (req, res) => {
+  res.send(req.user);
 });
 
-// TODO: GETTING ONE
+// * LOG IN A USER
+router.post(
+  '/login',
+  passport.authenticate('local', {
+    failureRedirect: '/users/fail',
+    successRedirect: '/users/success',
+  }),
+  (req, res) => {
+    res.send(req.body);
+  }
+);
 
-// CREATING ONE
+router.get('/fail', (req: Request, res: Response) => {
+  res.json({ message: 'failure to log in' });
+});
+
+router.get('/success', (req, res) => {
+  res.json({ message: 'success in logging in', user: req.user });
+});
+
+// * LOG OUT A USER
+router.get('/logout', (req, res) => {
+  req.logout();
+  res.send('logging out');
+});
+
+// * CREATING ONE
 router.post('/', async (req: Request, res: Response) => {
   try {
     const { firstName, lastName, password, email } = req.body;

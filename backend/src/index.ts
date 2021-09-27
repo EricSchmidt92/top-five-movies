@@ -5,8 +5,9 @@ import cors from 'cors';
 import passport from 'passport';
 import passportLocal from 'passport-local';
 import cookieParser from 'cookie-parser';
-import bcrypt from 'bcryptjs';
 import session from 'express-session';
+
+const LocalStrategy = passportLocal.Strategy;
 
 dotenv.config();
 // Set up app
@@ -30,6 +31,9 @@ app.use(
 );
 
 app.use(cookieParser(process.env.SESSION_SECRET));
+app.use(passport.initialize());
+app.use(passport.session());
+require('./auth/passportConfig')(passport);
 
 // ROUTES
 app.get('/', (req: Request, res: Response) => {
