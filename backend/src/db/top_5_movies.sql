@@ -19,7 +19,8 @@ CREATE TABLE "movies" (
   "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
   "description" varchar,
   "title" varchar NOT NULL,
-  "movie_id" varchar NOT NULL
+  "movie_id" varchar NOT NULL,
+  "poster_path" varchar
 );
 
 CREATE TABLE "user_favorites" (

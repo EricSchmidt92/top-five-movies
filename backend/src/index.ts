@@ -3,11 +3,8 @@ import { usersRouter } from './routes/users';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import passport from 'passport';
-import passportLocal from 'passport-local';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-
-const LocalStrategy = passportLocal.Strategy;
 
 dotenv.config();
 // Set up app
