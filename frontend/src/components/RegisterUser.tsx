@@ -11,6 +11,29 @@ export default function RegisterUser() {
 	const [loginPassword, setLoginPassword] = useState('');
 	const [currentUser, setCurrentUser] = useState('');
 
+	const movieData = [
+		{
+			movie_id: 49018,
+			rank: 1,
+		},
+		{
+			movie_id: 49018,
+			rank: 2,
+		},
+		{
+			movie_id: 49018,
+			rank: 3,
+		},
+		{
+			movie_id: 49018,
+			rank: 4,
+		},
+		{
+			movie_id: 49018,
+			rank: 5,
+		},
+	];
+
 	const register = async () => {
 		const result = await axios({
 			method: 'POST',
@@ -55,6 +78,52 @@ export default function RegisterUser() {
 		}
 	};
 
+	const createTopFive = async () => {
+		try {
+			const result = await axios({
+				method: 'POST',
+				data: {
+					movies: movieData,
+				},
+				withCredentials: true,
+				url: 'http://localhost:8080/users/favorites',
+			});
+
+			console.log(result);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const getTopFive = async () => {
+		try {
+			const result = await axios({
+				method: 'GET',
+				withCredentials: true,
+				url: 'http://localhost:8080/users/favorites',
+			});
+
+			console.log(result.data);
+		} catch (error) {}
+	};
+
+	const updateTopFive = async () => {
+		try {
+			const result = await axios({
+				method: 'PUT',
+				data: {
+					movies: movieData,
+				},
+				withCredentials: true,
+				url: 'http://localhost:8080/users/favorites',
+			});
+
+			console.log(result);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const logout = async () => {
 		try {
 			const result = await axios({
@@ -96,9 +165,7 @@ export default function RegisterUser() {
 				onChange={e => setEmail(e.target.value)}
 			/>
 			<button onClick={register}>Register</button>
-
 			<h2>Login</h2>
-
 			<input
 				type='email'
 				placeholder='email'
@@ -110,13 +177,20 @@ export default function RegisterUser() {
 				onChange={e => setLoginPassword(e.target.value)}
 			/>
 			<button onClick={login}>Login</button>
-
 			<h2>Get Current user</h2>
 			<button onClick={getUser}>Get User</button>
 			{currentUser ? currentUser : 'NO USER YET'}
-
 			<h2>LogOut</h2>
 			<button onClick={logout}>Logout</button>
+			<br />
+			<button onClick={createTopFive}>Create favorites</button>
+			<br />
+			<br />
+			<br />
+			<button onClick={updateTopFive}>Update top five</button> <br />
+			<br />
+			<br />
+			<button onClick={getTopFive}>Get top five</button>
 		</div>
 	);
 }
