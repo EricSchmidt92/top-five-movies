@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { PassportStatic } from 'passport';
 import passportLocal from 'passport-local';
+import { IUser } from '../models/IUser';
 const db = require('../db');
 
 const LocalStrategy = passportLocal.Strategy;
@@ -45,7 +46,7 @@ module.exports = function (passport: PassportStatic) {
         userEmail,
       ]);
       const { email, id } = user.rows[0];
-      const userInfo = {
+      const userInfo: IUser = {
         email,
         id,
       };
