@@ -2,7 +2,8 @@ import bcrypt from 'bcryptjs';
 import { PassportStatic } from 'passport';
 import passportLocal from 'passport-local';
 import { IUser } from '../models/IUser';
-const db = require('../db');
+// const db = require('../db');
+import * as db from '../db';
 
 const LocalStrategy = passportLocal.Strategy;
 
@@ -10,9 +11,7 @@ module.exports = function (passport: PassportStatic) {
   passport.use(
     new LocalStrategy(async (email, password, done) => {
       try {
-        const user = await db.query('SELECT * FROM users where email = $1', [
-          email,
-        ]);
+        const user = await db.getCurrentUser(email);
 
         if (user.rows[0] === undefined) {
           return done(null, false);
@@ -40,11 +39,9 @@ module.exports = function (passport: PassportStatic) {
     cb(null, user.email);
   });
 
-  passport.deserializeUser(async (userEmail, cb) => {
+  passport.deserializeUser(async (userEmail: string, cb) => {
     try {
-      const user = await db.query('SELECT * FROM users WHERE email = $1', [
-        userEmail,
-      ]);
+      const user = await db.getCurrentUser(userEmail);
       const { email, id } = user.rows[0];
       const userInfo: IUser = {
         email,

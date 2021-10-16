@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
-const db = require('../../db');
+// const db = require('../../db');
+import * as db from '../../db';
 import bcrypt from 'bcryptjs';
+import { INewUser } from '../../models/INewUser';
 
 export const getCurrentUser = (req: Request, res: Response) => {
   res.send(req.user);
@@ -40,17 +42,27 @@ export const createUser = async (req: Request, res: Response) => {
       res.send('Improper Values');
       return;
     }
-    const currentUser = await db.query('SELECT * FROM users WHERE email = $1', [
-      email,
-    ]);
+    // const currentUser = await db.query('SELECT * FROM users WHERE email = $1', [
+    //   email,
+    // ]);
+
+    const currentUser = await db.getCurrentUser(email);
 
     if (currentUser.rows[0] === undefined) {
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const newUser = await db.query(
-        'INSERT INTO users (first_name, last_name, password, email) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING RETURNING *',
-        [firstName, lastName, hashedPassword, email]
-      );
+      // const newUser = await db.query(
+      //   'INSERT INTO users (first_name, last_name, password, email) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING RETURNING *',
+      //   [firstName, lastName, hashedPassword, email]
+      // );
+      const newUserModel: INewUser = {
+        firstName,
+        lastName,
+        hashedPassword,
+        email,
+      };
+      const newUser = await db.createUser(newUserModel);
+
       res.json(newUser.rows[0]);
     } else {
       // TODO: FIND APPROPRIATE STATUS CODE FOR EXISTING USER

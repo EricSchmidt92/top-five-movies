@@ -33,6 +33,28 @@ export default function RegisterUser() {
 			rank: 5,
 		},
 	];
+	const updateMovieData = [
+		{
+			movie_id: 12345,
+			rank: 1,
+		},
+		{
+			movie_id: 12345,
+			rank: 2,
+		},
+		{
+			movie_id: 12345,
+			rank: 3,
+		},
+		{
+			movie_id: 12345,
+			rank: 4,
+		},
+		{
+			movie_id: 12345,
+			rank: 5,
+		},
+	];
 
 	const register = async () => {
 		const result = await axios({
@@ -86,7 +108,7 @@ export default function RegisterUser() {
 					movies: movieData,
 				},
 				withCredentials: true,
-				url: 'http://localhost:8080/users/favorites',
+				url: 'http://localhost:8080/favorites',
 			});
 
 			console.log(result);
@@ -100,9 +122,10 @@ export default function RegisterUser() {
 			const result = await axios({
 				method: 'GET',
 				withCredentials: true,
-				url: 'http://localhost:8080/users/favorites',
+				url: 'http://localhost:8080/favorites',
 			});
 
+			console.log(result);
 			console.log(result.data);
 		} catch (error) {}
 	};
@@ -112,10 +135,10 @@ export default function RegisterUser() {
 			const result = await axios({
 				method: 'PUT',
 				data: {
-					movies: movieData,
+					movies: updateMovieData,
 				},
 				withCredentials: true,
-				url: 'http://localhost:8080/users/favorites',
+				url: 'http://localhost:8080/favorites',
 			});
 
 			console.log(result);

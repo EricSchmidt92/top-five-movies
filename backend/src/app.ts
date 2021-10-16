@@ -1,5 +1,6 @@
 import express, { Application, Request, Response, Router } from 'express';
 import { usersRouter } from './components/users/user-routes';
+import { favoritesRouter } from './components/top-five-list/favorites';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import passport from 'passport';
@@ -38,5 +39,6 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/users', usersRouter);
+app.use('/favorites', favoritesRouter);
 
 export default app;
