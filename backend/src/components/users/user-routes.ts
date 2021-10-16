@@ -1,17 +1,16 @@
 import express from 'express';
 import { Router } from 'express';
 import passport from 'passport';
-import * as usersController from '../controllers/usersController';
-import * as favoritesController from '../controllers/favoritesController';
+import * as usersController from './usersController';
+import * as favoritesController from '../topFiveList/favoritesController';
 
 const router: Router = express.Router();
-// import db from '../db';
-const db = require('../db');
 
 // * GET LOGGED IN USER
 router.get('/', usersController.getCurrentUser);
 
 // * LOG IN A USER
+
 router.post(
   '/login',
   passport.authenticate('local', {

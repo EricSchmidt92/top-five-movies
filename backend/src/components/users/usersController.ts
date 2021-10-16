@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-const db = require('../db');
+const db = require('../../db');
 import bcrypt from 'bcryptjs';
 
 export const getCurrentUser = (req: Request, res: Response) => {

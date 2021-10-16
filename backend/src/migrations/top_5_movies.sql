@@ -15,13 +15,13 @@ CREATE TABLE "users" (
   "email" varchar UNIQUE NOT NULL
 );
 
-CREATE TABLE "movies" (
-  "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
-  "description" varchar,
-  "title" varchar NOT NULL,
-  "tmdb_id" bigint UNIQUE NOT NULL,
-  "poster_path" varchar
-);
+-- CREATE TABLE "movies" (
+--   "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
+--   "description" varchar,
+--   "title" varchar NOT NULL,
+--   "tmdb_id" bigint UNIQUE NOT NULL,
+--   "poster_path" varchar
+-- );
 
 CREATE TABLE "user_favorites" (
   "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
@@ -32,20 +32,20 @@ CREATE TABLE "user_favorites" (
 
 ALTER TABLE "user_favorites" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
-ALTER TABLE "movies" ADD FOREIGN KEY ("id") REFERENCES "user_favorites" ("movie_id");
+-- ALTER TABLE "movies" ADD FOREIGN KEY ("id") REFERENCES "user_favorites" ("movie_id");
 
 
-UPDATE 
-  user_favorites AS uf 
-SET 
-  movie_id = vals.m
-FROM
-  (VALUES
-  (123, '1'),
-  (456, '2'),
-  (456, '3'),
-  (456, '4'),
-  (456, '5')
-  ) AS vals(m, r)
-WHERE 
-  user_id = '1e618189-1c46-441d-ae26-0f46f2b1ca77' AND rank = vals.r;
+-- UPDATE 
+--   user_favorites AS uf 
+-- SET 
+--   movie_id = vals.m
+-- FROM
+--   (VALUES
+--   (123, '1'),
+--   (456, '2'),
+--   (456, '3'),
+--   (456, '4'),
+--   (456, '5')
+--   ) AS vals(m, r)
+-- WHERE 
+--   user_id = '1e618189-1c46-441d-ae26-0f46f2b1ca77' AND rank = vals.r;

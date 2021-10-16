@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { IUser } from '../models/IUser';
-import { IMovie } from '../models/IMovie';
-const db = require('../db');
+import { IUser } from '../../models/IUser';
+import { IMovie } from '../../models/IMovie';
+const db = require('../../db');
 
 import format from 'pg-format';
 //STRUCTURE OF REQUEST:
