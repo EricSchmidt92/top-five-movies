@@ -15,6 +15,15 @@ CREATE TABLE "users" (
   "email" varchar UNIQUE NOT NULL
 );
 
+CREATE TABLE "user_favorites" (
+  "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
+  "user_id" uuid NOT NULL,
+  "movie_id" integer  NOT NULL,
+  "rank" movie_rank NOT NULL
+);
+
+ALTER TABLE "user_favorites" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
 -- CREATE TABLE "movies" (
 --   "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
 --   "description" varchar,
@@ -23,14 +32,6 @@ CREATE TABLE "users" (
 --   "poster_path" varchar
 -- );
 
-CREATE TABLE "user_favorites" (
-  "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
-  "user_id" uuid NOT NULL,
-  "movie_id" uuid  NOT NULL,
-  "rank" movie_rank NOT NULL
-);
-
-ALTER TABLE "user_favorites" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 -- ALTER TABLE "movies" ADD FOREIGN KEY ("id") REFERENCES "user_favorites" ("movie_id");
 
