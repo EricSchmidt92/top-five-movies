@@ -12,7 +12,6 @@ const pool = new Pool({
   database: 'top-5-movies',
   port: 5432,
 });
-
 const query = (text: any, params: any) => pool.query(text, params);
 
 export const getCurrentUser = async (email: string) => {
