@@ -23,8 +23,11 @@ import * as db from '../../db';
 
 export const createFavorites = async (req: Request, res: Response) => {
 	try {
-		console.log('in create Favorites');
-		if (!req.user || !req.body.movies) throw Error;
+		// console.log('in create Favorites');
+		// console.log('req.user: ', req.user);
+		// console.log('req.body: ', req.body.movies);
+		if (!req.user) throw Error('No user logged in');
+		if (!req.body.movies) throw Error('No movies provided');
 		const user: IUser = req.user;
 		const movies: IMovie[] = req.body.movies;
 		if (!user.id) throw Error;
@@ -36,9 +39,10 @@ export const createFavorites = async (req: Request, res: Response) => {
 		// ]);
 		const userId = user.id;
 		const insertedMovies = await db.createFavorites(userId, movies);
-		if (insertedMovies.rows[0] === undefined) throw Error;
+		// console.log(insertedMovies);
+		if (insertedMovies === undefined) throw Error;
 
-		res.status(200).json(insertedMovies.rows[0]);
+		res.status(201).json(insertedMovies);
 	} catch (error) {
 		let message = 'failed to create top 5 list';
 
@@ -78,9 +82,7 @@ export const updateFavorites = async (req: Request, res: Response) => {
 
 		const updatedMovies = await db.updateFavorites(user.id, movies);
 		res.status(200).json({
-			message: `Movie List has been updated: ${
-				updatedMovies.rows.length
-			} movie ranks updated`,
+			message: `Movie List has been updated: ${updatedMovies.rows.length} movie ranks updated`,
 		});
 	} catch (error) {
 		let message = 'failed to update top 5 list';

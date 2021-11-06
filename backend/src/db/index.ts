@@ -7,9 +7,7 @@ import { IMovie } from '../models/IMovie';
 
 const pool = new Pool({
 	user: 'postgres',
-	// user: 'sysadmin',
 	host: 'localhost',
-	// host: 'localhost',
 	// host: 'host.docker.internal',
 	database: 'top-5-movies',
 	password: 'password',
@@ -44,8 +42,12 @@ export const createFavorites = async (id: string, movies: IMovie[]) => {
 	);
 
 	const insertedMovies = await query(queryText, []);
-
-	return insertedMovies;
+	const returnMovies: IMovie[] = insertedMovies.rows.map(
+		({ movie_id, rank }: any) => {
+			return { movie_id, rank: parseInt(rank) };
+		}
+	);
+	return returnMovies;
 };
 
 export const getFavorites = async (id: string) => {
