@@ -53,7 +53,7 @@ export const createFavorites = async (req: Request, res: Response) => {
 };
 
 export const getFavorites = async (req: Request, res: Response) => {
-	console.log('hitting get Favorites');
+	// console.log('hitting get Favorites');
 	try {
 		if (!req.user) throw new Error('No user found');
 		const user: IUser = req.user;

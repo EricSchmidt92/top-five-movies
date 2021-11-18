@@ -23,6 +23,7 @@ CREATE TABLE "user_favorites" (
 );
 
 ALTER TABLE "user_favorites" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE user_favorites ADD UNIQUE ("user_id", "rank");
 
 -- CREATE TABLE "movies" (
 --   "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,

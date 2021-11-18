@@ -1,6 +1,9 @@
 import app from '../../app';
 import request from 'supertest';
 import { IMovie } from '../../models/IMovie';
+import { query } from '../../db';
+
+process.env.NODE_ENV = 'test';
 const server = request.agent(app);
 
 const movieData: IMovie[] = [
@@ -27,12 +30,18 @@ const movieData: IMovie[] = [
 ];
 
 beforeAll(async () => {
+	await query('TRUNCATE users, user_favorites', []);
+
 	await server
 		.post('/users')
 		.send({ firstName: 'a', lastName: 'a', password: 'a', email: 'a' });
 	return await server
 		.post('/users/login')
 		.send({ username: 'a', password: 'a' });
+});
+
+beforeEach(async () => {
+	await query('TRUNCATE user_favorites', []);
 });
 
 afterEach(async () => {
@@ -51,11 +60,6 @@ it('returns email: a when checking current logged in user', async () => {
 });
 
 describe('Favorites create route', () => {
-	it('returns top 5 movies when creating favorites', async () => {
-		const movies: IMovie[] = [{ movie_id: 1234567, rank: 1 }];
-		const res = await server.post('/favorites').send(movies);
-	});
-
 	it('returns a status code of 201 on success', async () => {
 		const res = await server.post('/favorites').send({ movies: movieData });
 		expect(res.statusCode).toBe(201);
@@ -63,6 +67,7 @@ describe('Favorites create route', () => {
 
 	it('returns array of movies on successful creation', async () => {
 		const res = await server.post('/favorites').send({ movies: movieData });
+		// console.log(res);
 		expect(res.body).toEqual(movieData);
 	});
 
@@ -90,8 +95,19 @@ describe('Favorites create route', () => {
 });
 
 describe('Get Favorites route successful tests', () => {
-	//TODO setup test database then just insert movies ito user row for testing
+	beforeEach(async () => {
+		const res = await server.post('/favorites').send({ movies: movieData });
+	});
+
 	it('returns status code of 200 when successful', async () => {
 		const res = await server.get('/favorites');
+		expect(res.statusCode).toBe(200);
 	});
+
+	//TODO FINISH THESE TESTS
+	// it('returns list of movies upon success', async () => {
+	// 	const res = await server.get('/favorites');
+	// 	console.log(res.body);
+	// 	// expect(res.body).toContain()
+	// });
 });
