@@ -58,9 +58,16 @@ export const createFavorites = async (id: string, movies: IMovie[]) => {
 	return returnMovies;
 };
 
-export const getFavorites = async (id: string) => {
-	const queryText = `SELECT (movie_id, rank) FROM user_favorites WHERE user_id = $1`;
-	const userMovies = await query(queryText, [id]);
+export const getFavorites = async (id: string): Promise<IMovie[]> => {
+	const queryText = `SELECT * FROM user_favorites WHERE user_id = $1`;
+	const returnedMovies = await query(queryText, [id]);
+
+	const userMovies: IMovie[] = returnedMovies.rows.map(
+		({ movie_id, rank }: any) => {
+			return { movie_id, rank: parseInt(rank) };
+		}
+	);
+
 	return userMovies;
 };
 
@@ -78,6 +85,14 @@ export const updateFavorites = async (id: string, movies: IMovie[]) => {
 		values
 	);
 
-	const updatedMovies = await query(queryText, [id]);
+	const returnedMovies = await query(queryText, [id]);
+
+	// console.log('returnedMovies', returnedMovies.rows);
+	const updatedMovies: IMovie[] = returnedMovies.rows.map(
+		({ movie_id, rank }: any) => {
+			return { movie_id, rank: parseInt(rank) };
+		}
+	);
+
 	return updatedMovies;
 };

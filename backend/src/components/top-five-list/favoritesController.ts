@@ -61,9 +61,9 @@ export const getFavorites = async (req: Request, res: Response) => {
 
 		const userMovies = await db.getFavorites(user.id);
 
-		if (userMovies.rows.length < 1) throw new Error('error fetching movies.');
+		if (userMovies.length < 1) throw new Error('error fetching movies.');
 
-		res.status(200).json(userMovies.rows);
+		res.status(200).json(userMovies);
 	} catch (error) {
 		let message = 'failed to create top 5 list';
 
@@ -75,14 +75,16 @@ export const getFavorites = async (req: Request, res: Response) => {
 
 export const updateFavorites = async (req: Request, res: Response) => {
 	try {
-		if (!req.user || !req.body.movies) throw Error;
+		if (!req.user) throw new Error('No user found');
+		if (!req.body.movies) throw new Error('No list of movies provided');
 		const user: IUser = req.user;
 		const movies: IMovie[] = req.body.movies;
 		if (!user.id) throw Error;
 
 		const updatedMovies = await db.updateFavorites(user.id, movies);
 		res.status(200).json({
-			message: `Movie List has been updated: ${updatedMovies.rows.length} movie ranks updated`,
+			message: `Movie List has been updated: ${updatedMovies.length} movie ranks updated`,
+			movies: updatedMovies,
 		});
 	} catch (error) {
 		let message = 'failed to update top 5 list';

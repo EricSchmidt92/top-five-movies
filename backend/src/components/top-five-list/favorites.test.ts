@@ -29,6 +29,29 @@ const movieData: IMovie[] = [
 	},
 ];
 
+const updatedMovies: IMovie[] = [
+	{
+		movie_id: 12345,
+		rank: 1,
+	},
+	{
+		movie_id: 54321,
+		rank: 2,
+	},
+	{
+		movie_id: 12345,
+		rank: 3,
+	},
+	{
+		movie_id: 54321,
+		rank: 4,
+	},
+	{
+		movie_id: 12345,
+		rank: 5,
+	},
+];
+
 beforeAll(async () => {
 	await query('TRUNCATE users, user_favorites', []);
 
@@ -104,10 +127,63 @@ describe('Get Favorites route successful tests', () => {
 		expect(res.statusCode).toBe(200);
 	});
 
-	//TODO FINISH THESE TESTS
-	// it('returns list of movies upon success', async () => {
-	// 	const res = await server.get('/favorites');
-	// 	console.log(res.body);
-	// 	// expect(res.body).toContain()
-	// });
+	it('returns list of movies upon success', async () => {
+		const res = await server.get('/favorites');
+		// console.log('returns list:', res.body);
+		expect(res.body).toEqual(movieData);
+	});
+});
+
+//TODO FINISH THESE TESTS
+describe('Get Favorites route handling errors', () => {
+	// status code on error
+	it('returns status code 400 on error', async () => {
+		const res = await server.get('/favorites');
+		expect(res.statusCode).toBe(400);
+	});
+
+	it('should return appropriate message if no user present', async () => {
+		await server.get('/users/logout');
+		const res = await server.get('/favorites');
+		expect(res.body).toEqual({ message: 'No user found' });
+	});
+
+	it('should return appropriate message when no movies found', async () => {
+		const res = await server.get('/favorites');
+		expect(res.body).toEqual({ message: 'error fetching movies.' });
+	});
+});
+
+describe('Update favorites route successful tests', () => {
+	beforeEach(async () => {
+		const res = await server.post('/favorites').send({ movies: movieData });
+	});
+
+	it('should return appropriate message on movie update', async () => {
+		const res = await server.put('/favorites').send({ movies: updatedMovies });
+		expect(res.body.message).toContain('Movie List has been updated:');
+	});
+
+	it('should return array of updated movies on success', async () => {
+		const res = await server.put('/favorites').send({ movies: updatedMovies });
+		expect(res.body.movies).toEqual(updatedMovies);
+	});
+});
+
+describe('Update favorites route error handling', () => {
+	it('should return status code 400 on error', async () => {
+		const res = await server.put('/favorites');
+		expect(res.statusCode).toBe(400);
+	});
+
+	it('should return appropriate error message when no user is logged in', async () => {
+		await server.get('/users/logout');
+		const res = await server.put('/favorites');
+		expect(res.body.message).toBe('No user found');
+	});
+
+	it('should return appropriate error message when no list of movies provided', async () => {
+		const res = await server.put('/favorites');
+		expect(res.body.message).toBe('No list of movies provided');
+	});
 });
