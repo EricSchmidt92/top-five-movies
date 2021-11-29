@@ -4,6 +4,7 @@ const { Pool } = require('pg');
 
 import format from 'pg-format';
 import { IMovie } from '../models/IMovie';
+import { INewUserDto } from '../models/INewUserDto';
 
 const dbName =
 	process.env.NODE_ENV === 'test' ? 'top-5-movies-test' : 'top-5-movies';
@@ -35,7 +36,19 @@ export const createUser = async (newUserModel: INewUser) => {
 		[firstName, lastName, hashedPassword, email]
 	);
 
-	return newUser;
+	const userReturnDto: INewUserDto = newUser.rows.map(
+		({ first_name, last_name, email }: any) => {
+			return {
+				firstName: first_name,
+				lastName: last_name,
+				email,
+			};
+		}
+	)[0];
+
+	// console.log(userReturnDto);
+
+	return userReturnDto;
 };
 
 export const createFavorites = async (id: string, movies: IMovie[]) => {
