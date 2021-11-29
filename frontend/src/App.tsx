@@ -1,6 +1,6 @@
 // import { ColorModeProvider } from '@chakra-ui/color-mode';
 import CSSReset from '@chakra-ui/css-reset';
-import { theme, ThemeProvider } from '@chakra-ui/react';
+import { Container, theme, ThemeProvider } from '@chakra-ui/react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import HomePage from './components/HomePage/HomePage';
 import LoginPage from './components/LoginPage/LoginPage';
@@ -11,6 +11,7 @@ import handleLogIn from './components/LoginPage/utils/loginSubmit';
 import registerSubmit from './components/RegisterPage/utils/registerSubmit';
 import { useState } from 'react';
 import RegisterPage from './components/RegisterPage/RegisterPage';
+import NavBar from './components/NavBar/NavBar';
 
 function App() {
 	const [currentUser, setCurrentUser] = useState('');
@@ -19,6 +20,8 @@ function App() {
 			<CSSReset />
 			<HomePageContext.Provider value={{ currentUser, setCurrentUser }}>
 				<Router>
+					<NavBar />
+
 					<Switch>
 						<ProtectedRoutes
 							path='/home'

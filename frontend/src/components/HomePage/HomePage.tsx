@@ -1,5 +1,5 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { Box, VStack } from '@chakra-ui/layout';
+import { useEffect, useState } from 'react';
 import getCurrentUser from './utils/getCurrentUser';
 // import { useHistory } from 'react-router';
 
@@ -16,6 +16,8 @@ const HomePage = () => {
 
 		setUser(user.email);
 		setUserId(user.id);
+
+		console.log('current user: ', user);
 	};
 
 	useEffect(() => {
@@ -23,15 +25,15 @@ const HomePage = () => {
 	}, []);
 
 	return (
-		<div>
+		<VStack alignItems='center' justify='center' h='100vh'>
 			{user ? (
-				<div>
+				<Box alignItems='center'>
 					this is the home page of {user} with an id of {userId}
-				</div>
+				</Box>
 			) : (
 				<div>no user found</div>
 			)}
-		</div>
+		</VStack>
 	);
 };
 
