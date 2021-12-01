@@ -1,6 +1,6 @@
 // import { ColorModeProvider } from '@chakra-ui/color-mode';
 import CSSReset from '@chakra-ui/css-reset';
-import { Container, theme, ThemeProvider } from '@chakra-ui/react';
+import { theme, ThemeProvider } from '@chakra-ui/react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import HomePage from './components/HomePage/HomePage';
 import LoginPage from './components/LoginPage/LoginPage';
@@ -15,13 +15,15 @@ import NavBar from './components/NavBar/NavBar';
 
 function App() {
 	const [currentUser, setCurrentUser] = useState('');
+	const [searchQuery, setSearchQuery] = useState('');
 	return (
 		<ThemeProvider theme={theme}>
 			<CSSReset />
-			<HomePageContext.Provider value={{ currentUser, setCurrentUser }}>
+			<HomePageContext.Provider
+				value={{ currentUser, setCurrentUser, searchQuery, setSearchQuery }}
+			>
 				<Router>
 					<NavBar />
-
 					<Switch>
 						<ProtectedRoutes
 							path='/home'

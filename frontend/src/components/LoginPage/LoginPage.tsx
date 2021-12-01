@@ -3,7 +3,7 @@ import { useColorModeValue } from '@chakra-ui/color-mode';
 import { FormControl, FormLabel } from '@chakra-ui/form-control';
 import { Input } from '@chakra-ui/input';
 import { Flex, Heading, Link, VStack } from '@chakra-ui/layout';
-import React, { FormEvent, SyntheticEvent, useState, useContext } from 'react';
+import { FormEvent, SyntheticEvent, useState, useContext } from 'react';
 import { useHistory } from 'react-router';
 import { ILoginValues } from './models/ILoginValues.model';
 import { HomePageContext } from '../../contexts/HomePageContext';
@@ -18,8 +18,8 @@ const LoginPage = ({ submit }: LoginProps) => {
 	const formBackground = useColorModeValue('gray.100', 'gray.700');
 	const history = useHistory();
 
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const [email, setEmail] = useState('eric@gmail.com');
+	const [password, setPassword] = useState('sosecure');
 
 	const { setCurrentUser }: any = useContext(HomePageContext);
 
