@@ -6,6 +6,7 @@ import cors from 'cors';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import { moviesRouter } from './components/movies/movie-routes';
 
 dotenv.config();
 // Set up app
@@ -14,18 +15,18 @@ const app: Application = express();
 // Middleware
 app.use(express.json());
 app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  })
+	cors({
+		origin: 'http://localhost:3000',
+		credentials: true,
+	})
 );
 
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET || '',
-    resave: false,
-    saveUninitialized: false,
-  })
+	session({
+		secret: process.env.SESSION_SECRET || '',
+		resave: false,
+		saveUninitialized: false,
+	})
 );
 
 app.use(cookieParser(process.env.SESSION_SECRET));
@@ -35,10 +36,11 @@ require('./auth/passportConfig')(passport);
 
 // ROUTES
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello');
+	res.send('Hello');
 });
 
 app.use('/users', usersRouter);
 app.use('/favorites', favoritesRouter);
+app.use('/movies', moviesRouter);
 
 export default app;
