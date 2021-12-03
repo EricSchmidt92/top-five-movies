@@ -11,7 +11,6 @@ const loginSubmit = async (loginValues: ILoginValues): Promise<string> => {
 		withCredentials: true,
 		url: 'http://localhost:8080/users/login',
 	});
-	console.log(result.data);
 	if (result.data.user) return result.data.user.email;
 	else return 'error logging in';
 };

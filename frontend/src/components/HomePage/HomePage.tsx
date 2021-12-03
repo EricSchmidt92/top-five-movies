@@ -1,23 +1,24 @@
-import { Box, Flex, HStack, SimpleGrid, VStack } from '@chakra-ui/layout';
-import { useContext, useEffect, useState } from 'react';
+import { HStack, SimpleGrid, VStack } from '@chakra-ui/layout';
+import { SyntheticEvent, useContext, useEffect, useState } from 'react';
 import getCurrentUser from './utils/getCurrentUser';
 import { HomePageContext } from '../../contexts/HomePageContext';
 import getMovieQuery from './utils/getMovieQuery';
 import { IMovie } from './models/IMovie.model';
 import MovieCard from '../MovieCard/MovieCard';
-import { Text, Image, Button } from '@chakra-ui/react';
+import { Text, Button } from '@chakra-ui/react';
 import getUserFavorites from './utils/getUserFavorites';
 import getPopularMovieData from './utils/getPopularMovieData';
 import postMovies from './utils/postMovies';
 import { IMovieFavoritesDto } from './models/IMovieFavoritesDto.model';
+import getFavoriteMovieData from './utils/getFavoriteMovieData';
 
 const HomePage = () => {
 	// const history = useHistory();
 	const [user, setUser] = useState('');
 	const [userId, setUserId] = useState('');
-	const [movies, setMovies] = useState<IMovie[]>([{}]);
-	const [queriedMovies, setQueriedMovies] = useState<IMovie[]>([{}]);
-	const [favoriteMovies, setFavoriteMovies] = useState<IMovie[]>([{}]);
+	const [movies, setMovies] = useState<IMovie[]>([]);
+	const [queriedMovies, setQueriedMovies] = useState<IMovie[]>([]);
+	const [favoriteMovies, setFavoriteMovies] = useState<IMovie[]>([]);
 	const [isNewUser, setIsNewUser] = useState(false);
 	const { searchQuery }: any = useContext(HomePageContext);
 
@@ -61,15 +62,16 @@ const HomePage = () => {
 				setFavoriteMovies(old => []);
 				setIsNewUser(true);
 			} else {
-				console.log('returning user');
-				// const formattedFavorites =
-
-				for (const movieItem of userFavorites) {
-					//! change this!!!!
-					// const item = await getMovieQuery(movieItem.movie_id);
+				// console.log('returning user, fetching data...');
+				const favoriteMovieList = await getUserFavorites();
+				// console.log('favoriteMoviesList: ', favoriteMovieList);
+				const favoriteMovieData = await getFavoriteMovieData(favoriteMovieList);
+				console.log('favorite movie data', favoriteMovieData);
+				if (favoriteMovieData[0].error === undefined) {
+					console.log('error retrieving data: ', favoriteMovieData[0].error);
 				}
-				setFavoriteMovies(old => [...userFavorites]);
-				console.log('user favs: ', userFavorites);
+				setFavoriteMovies(old => [...favoriteMovieData]);
+				// console.log('user favs: ', userFavorites);
 			}
 		} catch (error) {
 			let message = 'error with fetching user';
@@ -82,17 +84,16 @@ const HomePage = () => {
 		try {
 			const returnedMovies = await getPopularMovieData();
 			const newMovieList: IMovie[] = [...returnedMovies];
-			console.log(newMovieList);
+			console.log('pop movie list', newMovieList);
 			setMovies(oldArr => [...newMovieList]);
 		} catch (error) {
 			let message = 'error with fetching movies';
 			if (error instanceof Error) message = `Error: ${error.message}`;
-			console.log(message);
+			console.error(message);
 		}
 	};
 
-	const handleMovieClick = (event: any, movie: IMovie) => {
-		console.log(movie);
+	const handleMovieClick = (event: SyntheticEvent, movie: IMovie) => {
 		if (favoriteMovies.length >= 5) {
 			alert('only 5 movies allowed');
 			return;
@@ -106,6 +107,14 @@ const HomePage = () => {
 		}
 
 		setFavoriteMovies(old => [...old, movie]);
+	};
+
+	const handleTopFiveClick = (event: SyntheticEvent, movie: IMovie) => {
+		const newFavoriteMovies: IMovie[] = favoriteMovies.filter(
+			({ id }) => id !== movie.id
+		);
+
+		setFavoriteMovies(old => [...newFavoriteMovies]);
 	};
 
 	const handleSaveClick = async () => {
@@ -137,11 +146,17 @@ const HomePage = () => {
 	useEffect(() => {
 		setUpUser();
 		setUpPopularMovies();
+
+		console.log('end of use effect', movies);
 	}, []);
 
 	useEffect(() => {
 		const handleMovieSearch = async () => {
 			try {
+				if (searchQuery.length <= 0) {
+					setQueriedMovies(oldArr => []);
+					return;
+				}
 				const returnedMovies = await getMovieQuery(searchQuery);
 				const searchedMovieList: IMovie[] = [...returnedMovies];
 				setQueriedMovies(oldArr => [...searchedMovieList]);
@@ -177,7 +192,7 @@ const HomePage = () => {
 								<MovieCard
 									key={movie.id || index}
 									movie={movie}
-									handleMovieClick={handleMovieClick}
+									handleMovieClick={handleTopFiveClick}
 								/>
 							);
 						})}
@@ -203,6 +218,16 @@ const HomePage = () => {
 								/>
 							);
 					  })}
+
+				{/* {movies.map((movie, index) => {
+					return (
+						<MovieCard
+							key={movie.id}
+							movie={movie}
+							handleMovieClick={handleMovieClick}
+						/>
+					);
+				})} */}
 			</SimpleGrid>
 		</VStack>
 	);

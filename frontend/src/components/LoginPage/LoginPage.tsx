@@ -26,11 +26,9 @@ const LoginPage = ({ submit }: LoginProps) => {
 	const handleSubmit = async (event: SyntheticEvent) => {
 		event.preventDefault();
 		const result = await submit({ email, password });
-		console.log('result: ', result);
 		if (result === 'error logging in') {
 			return;
 		}
-		console.log(result);
 		setCurrentUser(result);
 		history.push('/home');
 	};
