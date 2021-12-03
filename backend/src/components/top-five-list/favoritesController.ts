@@ -23,14 +23,17 @@ import * as db from '../../db';
 
 export const createFavorites = async (req: Request, res: Response) => {
 	try {
-		// console.log('in create Favorites');
+		console.log('in create Favorites');
 		// console.log('req.user: ', req.user);
 		// console.log('req.body: ', req.body.movies);
 		if (!req.user) throw Error('No user logged in');
+		// console.log('found user');
 		if (!req.body.movies) throw Error('No movies provided');
+		// console.log('found movies');
 		const user: IUser = req.user;
 		const movies: IMovie[] = req.body.movies;
 		if (!user.id) throw Error;
+		// console.log('found user id');
 
 		// const values = movies.map(({ movie_id, rank }) => [
 		//   user.id,
@@ -61,7 +64,12 @@ export const getFavorites = async (req: Request, res: Response) => {
 
 		const userMovies = await db.getFavorites(user.id);
 
-		if (userMovies.length < 1) throw new Error('error fetching movies.');
+		if (userMovies.length < 1) {
+			// console.log('no movies found!');
+			res.status(200).send({ message: 'no user list found' });
+			return;
+		}
+		//! GET MOVIE DATA HERE
 
 		res.status(200).json(userMovies);
 	} catch (error) {

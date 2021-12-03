@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const getMovieData = async () => {
+const getPopularMovieData = async () => {
 	try {
 		const result = await axios({
 			method: 'GET',
@@ -16,4 +16,4 @@ const getMovieData = async () => {
 	}
 };
 
-export default getMovieData;
+export default getPopularMovieData;

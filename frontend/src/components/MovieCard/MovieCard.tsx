@@ -1,10 +1,24 @@
 import { Box, Flex, VStack } from '@chakra-ui/layout';
 import { Text, Image } from '@chakra-ui/react';
+import { SyntheticEvent } from 'react';
 import { IMovie } from '../HomePage/models/IMovie.model';
 
-const MovieCard = ({ movie }: { movie: IMovie }) => {
+const MovieCard = ({
+	movie,
+	handleMovieClick,
+}: {
+	movie: IMovie;
+	handleMovieClick: any;
+}) => {
 	return (
-		<Box h='500px' w='300px' boxShadow='2xl' rounded='md' bg='gray.800'>
+		<Box
+			h='500px'
+			w='300px'
+			boxShadow='2xl'
+			rounded='md'
+			bg='gray.800'
+			onClick={(event: SyntheticEvent) => handleMovieClick(event, movie)}
+		>
 			<Flex
 				maxH='278px'
 				w='100%'
@@ -31,11 +45,11 @@ const MovieCard = ({ movie }: { movie: IMovie }) => {
 				p={3}
 				boxShadow='0 -5px 10px -5px #1A202C'
 			>
-				<Text fontSize='lg' fontWeight='bold'>
+				<Text fontSize='lg' fontWeight='bold' noOfLines={2}>
 					{movie.title}
 				</Text>
 				<Text fontSize='md'>Summary</Text>
-				<Text fontSize='sm' noOfLines={6}>
+				<Text fontSize='sm' noOfLines={4}>
 					{movie.overview}
 				</Text>
 			</VStack>
