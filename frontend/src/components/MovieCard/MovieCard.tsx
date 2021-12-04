@@ -1,7 +1,7 @@
 import { Box, Flex, VStack } from '@chakra-ui/layout';
-import { Text, Image } from '@chakra-ui/react';
+import { Text, Image, useColorModeValue } from '@chakra-ui/react';
 import { SyntheticEvent } from 'react';
-import { IMovie } from '../HomePage/models/IMovie.model';
+import IMovie from '../HomePage/models/IMovie.model';
 
 const MovieCard = ({
 	movie,
@@ -10,19 +10,20 @@ const MovieCard = ({
 	movie: IMovie;
 	handleMovieClick: any;
 }) => {
+	const cardBackground = useColorModeValue('gray.100', 'gray.700');
 	return (
 		<Box
 			h='500px'
 			w='300px'
-			boxShadow='2xl'
+			boxShadow='lg'
 			rounded='md'
-			bg='gray.800'
+			bg={cardBackground}
 			onClick={(event: SyntheticEvent) => handleMovieClick(event, movie)}
 		>
 			<Flex
 				maxH='278px'
 				w='100%'
-				bg='gray.800'
+				bg={cardBackground}
 				justify='center'
 				align='center'
 				rounded='md'
@@ -39,12 +40,7 @@ const MovieCard = ({
 					/>
 				</Flex>
 			</Flex>
-			<VStack
-				align='flex-start'
-				textColor='white'
-				p={3}
-				boxShadow='0 -5px 10px -5px #1A202C'
-			>
+			<VStack align='flex-start' p={3}>
 				<Text fontSize='lg' fontWeight='bold' noOfLines={2}>
 					{movie.title}
 				</Text>

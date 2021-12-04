@@ -21,6 +21,8 @@ const NavBar = () => {
 	const { currentUser, setCurrentUser, searchQuery, setSearchQuery }: any =
 		useContext(HomePageContext);
 	let buttonColorMode = useColorModeValue('black', 'white');
+	const background = useColorModeValue('gray.100', 'gray.800');
+	const inputBackground = useColorModeValue('gray.100', 'gray.700');
 
 	const handleLogOut = async () => {
 		try {
@@ -43,18 +45,21 @@ const NavBar = () => {
 	return (
 		<Flex
 			as='nav'
-			bg={useColorModeValue('gray.200', 'gray.900')}
-			p={4}
+			bg={background}
+			py={4}
+			px={10}
 			align='center'
 			justify='space-between'
 			position='sticky'
 			top='0'
 			w='100%'
+			shadow='sm'
+			zIndex='1'
 		>
 			<Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-				<Link as={RouterLink} to='/home'>
+				<Button as={RouterLink} to='/home' variant='link'>
 					Top Five Movies
-				</Link>
+				</Button>
 			</Flex>
 			<Flex
 				flex='2'
@@ -68,6 +73,7 @@ const NavBar = () => {
 					<Input
 						placeholder='Enter a movie to search'
 						variant='outline'
+						bg={inputBackground}
 						value={searchQuery}
 						onChange={(e: FormEvent<HTMLInputElement>) =>
 							setSearchQuery(e.currentTarget.value)
@@ -80,6 +86,9 @@ const NavBar = () => {
 					<Button onClick={toggleColorMode}>
 						{colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
 					</Button>
+					<Button as={RouterLink} to='/about' variant='link'>
+						About
+					</Button>
 					{!currentUser && (
 						<>
 							<Link
@@ -90,6 +99,7 @@ const NavBar = () => {
 							>
 								Sign In
 							</Link>
+
 							<Button as={RouterLink} to='/register' colorScheme='purple'>
 								Sign Up
 							</Button>

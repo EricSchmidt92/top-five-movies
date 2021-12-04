@@ -12,6 +12,7 @@ import registerSubmit from './components/RegisterPage/utils/registerSubmit';
 import { useState } from 'react';
 import RegisterPage from './components/RegisterPage/RegisterPage';
 import NavBar from './components/NavBar/NavBar';
+import AboutPage from './components/AboutPage/AboutPage';
 
 function App() {
 	const [currentUser, setCurrentUser] = useState('');
@@ -38,6 +39,9 @@ function App() {
 						</Route>
 						<Route path='/test'>
 							<RegisterUser />
+						</Route>
+						<Route path='/about'>
+							<AboutPage />
 						</Route>
 						<Route exact path='/'>
 							{/* <HomePageContext.Provider value={{ currentUser, setCurrentUser }}> */}

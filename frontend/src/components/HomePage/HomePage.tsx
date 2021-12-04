@@ -1,27 +1,31 @@
-import { HStack, SimpleGrid, VStack } from '@chakra-ui/layout';
+import {
+	Text,
+	Button,
+	useColorModeValue,
+	HStack,
+	SimpleGrid,
+	VStack,
+} from '@chakra-ui/react';
 import { SyntheticEvent, useContext, useEffect, useState } from 'react';
 import getCurrentUser from './utils/getCurrentUser';
-import { HomePageContext } from '../../contexts/HomePageContext';
 import getMovieQuery from './utils/getMovieQuery';
-import { IMovie } from './models/IMovie.model';
-import MovieCard from '../MovieCard/MovieCard';
-import { Text, Button } from '@chakra-ui/react';
-import getUserFavorites from './utils/getUserFavorites';
 import getPopularMovieData from './utils/getPopularMovieData';
+import getUserFavorites from './utils/getUserFavorites';
+import { HomePageContext } from '../../contexts/HomePageContext';
+import IMovie from './models/IMovie.model';
+import MovieCard from '../MovieCard/MovieCard';
 import postMovies from './utils/postMovies';
-import { IMovieFavoritesDto } from './models/IMovieFavoritesDto.model';
+import IMovieFavoritesDto from './models/IMovieFavoritesDto.model';
 import getFavoriteMovieData from './utils/getFavoriteMovieData';
 import putMovies from './utils/putMovies';
 
 const HomePage = () => {
-	// const history = useHistory();
-	// const [user, setUser] = useState('');
-	// const [userId, setUserId] = useState('');
 	const [movies, setMovies] = useState<IMovie[]>([]);
 	const [queriedMovies, setQueriedMovies] = useState<IMovie[]>([]);
 	const [favoriteMovies, setFavoriteMovies] = useState<IMovie[]>([]);
 	const [isNewUser, setIsNewUser] = useState(false);
 	const { searchQuery }: any = useContext(HomePageContext);
+	const background = useColorModeValue('gray.100', 'gray.800');
 
 	const handleMovieClick = (event: SyntheticEvent, movie: IMovie) => {
 		if (favoriteMovies.length >= 5) {
@@ -148,16 +152,17 @@ const HomePage = () => {
 	}, [searchQuery]);
 
 	return (
-		<VStack>
+		<VStack mt={10} spacing={12} bg={background}>
+			{/* Top 5 Movies area */}
 			<VStack w='full' minH={80}>
-				<HStack w='full' justify='space-between' px={2}>
+				<HStack w='full' justify='space-between' px={7}>
 					<div></div>
 					<Text fontSize='4xl'>Your Top 5</Text>
 					<Button colorScheme='green' size='sm' onClick={handleSaveClick}>
 						Save Changes
 					</Button>
 				</HStack>
-				<HStack w='100%' p={5} justify='space-evenly'>
+				<HStack w='100%' p={5} spacing={5}>
 					{favoriteMovies.length > 0 &&
 						favoriteMovies.map((movie, index) => {
 							return (
@@ -170,6 +175,7 @@ const HomePage = () => {
 						})}
 				</HStack>
 			</VStack>
+			{/* Movies to choose from area */}
 			<SimpleGrid columns={5} spacing={6} mt={6}>
 				{queriedMovies.length > 0
 					? queriedMovies.map((movie, index) => {

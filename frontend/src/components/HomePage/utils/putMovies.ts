@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { IMovieFavoritesDto } from '../models/IMovieFavoritesDto.model';
+import IMovieFavoritesDto from '../models/IMovieFavoritesDto.model';
 
 interface IPutMovieResult {
 	result: AxiosResponse | undefined;

@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { IMovie } from '../models/IMovie.model';
-import { IMovieFavoritesDto } from '../models/IMovieFavoritesDto.model';
+import IMovie from '../models/IMovie.model';
+import IMovieFavoritesDto from '../models/IMovieFavoritesDto.model';
 const getFavoriteMovieData = async (
 	movies: IMovieFavoritesDto[]
 ): Promise<IMovie[]> => {
