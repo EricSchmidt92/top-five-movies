@@ -11,90 +11,21 @@ import getPopularMovieData from './utils/getPopularMovieData';
 import postMovies from './utils/postMovies';
 import { IMovieFavoritesDto } from './models/IMovieFavoritesDto.model';
 import getFavoriteMovieData from './utils/getFavoriteMovieData';
+import putMovies from './utils/putMovies';
 
 const HomePage = () => {
 	// const history = useHistory();
-	const [user, setUser] = useState('');
-	const [userId, setUserId] = useState('');
+	// const [user, setUser] = useState('');
+	// const [userId, setUserId] = useState('');
 	const [movies, setMovies] = useState<IMovie[]>([]);
 	const [queriedMovies, setQueriedMovies] = useState<IMovie[]>([]);
 	const [favoriteMovies, setFavoriteMovies] = useState<IMovie[]>([]);
 	const [isNewUser, setIsNewUser] = useState(false);
 	const { searchQuery }: any = useContext(HomePageContext);
 
-	// const testRows = [];
-
-	// for (let i = 0; i < 5; i++) {
-	// 	testRows.push(
-	// 		<Flex
-	// 			key={i}
-	// 			h='278px'
-	// 			w='185px'
-	// 			justify='center'
-	// 			align='center'
-	// 			rounded='md'
-	// 		>
-	// 			<Image
-	// 				// src={movie.posterPath}
-	// 				src='http://image.tmdb.org/t/p/w185/xmbU4JTUm8rsdtn7Y3Fcm30GpeT.jpg'
-	// 				alt={`Poster for a top 5 movie`}
-	// 				objectFit='scale-down'
-	// 				borderRadius='lg'
-	// 				boxSize='278px'
-	// 			/>
-	// 		</Flex>
-	// 	);
-	// }
-
-	const setUpUser = async () => {
-		try {
-			const user = await getCurrentUser();
-			if (user.error !== undefined) {
-				console.log(user.error);
-			}
-
-			setUser(user.email);
-			setUserId(user.id);
-			// console.log('current user: ', user);
-			const userFavorites = await getUserFavorites();
-			if (userFavorites.hasOwnProperty('message')) {
-				console.log('we have a new user here');
-				setFavoriteMovies(old => []);
-				setIsNewUser(true);
-			} else {
-				// console.log('returning user, fetching data...');
-				const favoriteMovieList = await getUserFavorites();
-				// console.log('favoriteMoviesList: ', favoriteMovieList);
-				const favoriteMovieData = await getFavoriteMovieData(favoriteMovieList);
-				console.log('favorite movie data', favoriteMovieData);
-				if (favoriteMovieData[0].error === undefined) {
-					console.log('error retrieving data: ', favoriteMovieData[0].error);
-				}
-				setFavoriteMovies(old => [...favoriteMovieData]);
-				// console.log('user favs: ', userFavorites);
-			}
-		} catch (error) {
-			let message = 'error with fetching user';
-			if (error instanceof Error) message = `Error: ${error.message}`;
-			console.log(message);
-		}
-	};
-
-	const setUpPopularMovies = async () => {
-		try {
-			const returnedMovies = await getPopularMovieData();
-			const newMovieList: IMovie[] = [...returnedMovies];
-			console.log('pop movie list', newMovieList);
-			setMovies(oldArr => [...newMovieList]);
-		} catch (error) {
-			let message = 'error with fetching movies';
-			if (error instanceof Error) message = `Error: ${error.message}`;
-			console.error(message);
-		}
-	};
-
 	const handleMovieClick = (event: SyntheticEvent, movie: IMovie) => {
 		if (favoriteMovies.length >= 5) {
+			//TODO change this later to better error message
 			alert('only 5 movies allowed');
 			return;
 		}
@@ -102,6 +33,7 @@ const HomePage = () => {
 		if (
 			favoriteMovies.find(favorite => favorite.id === movie.id) !== undefined
 		) {
+			//TODO change this later to better error message
 			alert('no duplicates allowed!');
 			return;
 		}
@@ -123,14 +55,13 @@ const HomePage = () => {
 			return;
 		}
 
+		const moviesToSave: IMovieFavoritesDto[] = favoriteMovies.map(
+			(movie, index) => {
+				return { movie_id: movie.id, rank: index + 1 };
+			}
+		);
 		if (isNewUser) {
-			const moviesToPost: IMovieFavoritesDto[] = favoriteMovies.map(
-				(movie, index) => {
-					return { movie_id: movie.id, rank: index + 1 };
-				}
-			);
-
-			const result = await postMovies(moviesToPost);
+			const result = await postMovies(moviesToSave);
 			console.log('results from first save!', result);
 			if (result.error !== undefined) {
 				alert('something went wrong with the request!');
@@ -139,15 +70,61 @@ const HomePage = () => {
 
 			setIsNewUser(false);
 		} else {
-			alert('returning user must save other way');
+			const result = await putMovies(moviesToSave);
+			if (typeof result.error === undefined) {
+				console.error('Error with put: ', result.error);
+			}
+			//TODO add message banner at top of screen on success
+			console.log('movies saved successfully');
 		}
 	};
 
 	useEffect(() => {
+		const setUpUser = async () => {
+			try {
+				const user = await getCurrentUser();
+				if (user.error !== undefined) {
+					console.log(user.error);
+				}
+
+				// setUser(user.email);
+				// setUserId(user.id);
+				const userFavorites = await getUserFavorites();
+				if (userFavorites.hasOwnProperty('message')) {
+					console.log('we have a new user here');
+					setFavoriteMovies(old => []);
+					setIsNewUser(true);
+				} else {
+					const favoriteMovieList = await getUserFavorites();
+					const favoriteMovieData = await getFavoriteMovieData(
+						favoriteMovieList
+					);
+					if (typeof favoriteMovieData[0].error === undefined) {
+						console.log('error retrieving data: ', favoriteMovieData[0].error);
+					}
+					setFavoriteMovies(old => [...favoriteMovieData]);
+				}
+			} catch (error) {
+				let message = 'error with fetching user';
+				if (error instanceof Error) message = `Error: ${error.message}`;
+				console.log(message);
+			}
+		};
+
+		const setUpPopularMovies = async () => {
+			try {
+				const returnedMovies = await getPopularMovieData();
+				const newMovieList: IMovie[] = [...returnedMovies];
+				setMovies(oldArr => [...newMovieList]);
+			} catch (error) {
+				let message = 'error with fetching movies';
+				if (error instanceof Error) message = `Error: ${error.message}`;
+				console.error(message);
+			}
+		};
+
 		setUpUser();
 		setUpPopularMovies();
-
-		console.log('end of use effect', movies);
 	}, []);
 
 	useEffect(() => {
@@ -172,16 +149,11 @@ const HomePage = () => {
 
 	return (
 		<VStack>
-			<VStack border='1px solid black' w='full' minH={80}>
+			<VStack w='full' minH={80}>
 				<HStack w='full' justify='space-between' px={2}>
 					<div></div>
 					<Text fontSize='4xl'>Your Top 5</Text>
-					<Button
-						colorScheme='green'
-						size='sm'
-						variant='outline'
-						onClick={handleSaveClick}
-					>
+					<Button colorScheme='green' size='sm' onClick={handleSaveClick}>
 						Save Changes
 					</Button>
 				</HStack>
@@ -218,16 +190,6 @@ const HomePage = () => {
 								/>
 							);
 					  })}
-
-				{/* {movies.map((movie, index) => {
-					return (
-						<MovieCard
-							key={movie.id}
-							movie={movie}
-							handleMovieClick={handleMovieClick}
-						/>
-					);
-				})} */}
 			</SimpleGrid>
 		</VStack>
 	);

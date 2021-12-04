@@ -21,7 +21,6 @@ const getFavoriteMovieData = async (
 		const resultsArr = await Promise.all(
 			movies.reduce((acc, { movie_id }) => {
 				if (movie_id) {
-					const val = callApi(movie_id);
 					return [...acc, callApi(movie_id)];
 				}
 				return acc;
