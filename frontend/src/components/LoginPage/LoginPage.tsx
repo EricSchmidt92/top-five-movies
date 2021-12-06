@@ -18,8 +18,10 @@ const LoginPage = ({ submit }: LoginProps) => {
 	const formBackground = useColorModeValue('gray.100', 'gray.700');
 	const history = useHistory();
 
-	const [email, setEmail] = useState('eric@gmail.com');
-	const [password, setPassword] = useState('sosecure');
+	// const [email, setEmail] = useState('eric@gmail.com');
+	// const [password, setPassword] = useState('sosecure');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 
 	const { setCurrentUser }: any = useContext(HomePageContext);
 

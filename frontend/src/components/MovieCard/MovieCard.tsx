@@ -31,8 +31,8 @@ const MovieCard = ({
 			>
 				<Flex h='278px' w='185px' justify='center' align='center' rounded='md'>
 					<Image
-						// src={movie.posterPath}
-						src='http://image.tmdb.org/t/p/w185/rjkmN1dniUHVYAtwuV3Tji7FsDO.jpg'
+						src={movie.posterPath}
+						// src='http://image.tmdb.org/t/p/w185/rjkmN1dniUHVYAtwuV3Tji7FsDO.jpg'
 						alt={`Poster for ${movie.title}`}
 						objectFit='scale-down'
 						borderRadius='lg'
