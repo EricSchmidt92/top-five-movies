@@ -14,6 +14,10 @@ Allows users to search for and store their top five movies. Movie data is pulled
 
 - PostgreSQL
 
+- JestJS
+
+- Supertest
+
 ## Users can:
 
 - Create an account
