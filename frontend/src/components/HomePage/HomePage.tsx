@@ -5,6 +5,11 @@ import {
 	HStack,
 	SimpleGrid,
 	VStack,
+	Alert,
+	AlertIcon,
+	Box,
+	Center,
+	LightMode,
 } from '@chakra-ui/react';
 import { SyntheticEvent, useContext, useEffect, useState } from 'react';
 import getCurrentUser from './utils/getCurrentUser';
@@ -19,18 +24,42 @@ import IMovieFavoritesDto from './models/IMovieFavoritesDto.model';
 import getFavoriteMovieData from './utils/getFavoriteMovieData';
 import putMovies from './utils/putMovies';
 
+enum AlertTypes {
+	error = 'error',
+	info = 'info',
+	warning = 'warning',
+	success = 'success',
+}
+
 const HomePage = () => {
 	const [movies, setMovies] = useState<IMovie[]>([]);
 	const [queriedMovies, setQueriedMovies] = useState<IMovie[]>([]);
 	const [favoriteMovies, setFavoriteMovies] = useState<IMovie[]>([]);
 	const [isNewUser, setIsNewUser] = useState(false);
+	const [showAlert, setShowAlert] = useState(false);
+	const [alertType, setAlertType] = useState<AlertTypes>(AlertTypes.error);
+	const [errorAlertMessage, setErrorAlertMessage] = useState('');
 	const { searchQuery }: any = useContext(HomePageContext);
 	const background = useColorModeValue('gray.100', 'gray.800');
+
+	const handleShowAlert = (alertType: AlertTypes, message: string) => {
+		setAlertType(alertType);
+		setShowAlert(true);
+		setErrorAlertMessage(message);
+
+		setTimeout(() => {
+			setShowAlert(false);
+			setErrorAlertMessage('');
+		}, 3000);
+	};
 
 	const handleMovieClick = (event: SyntheticEvent, movie: IMovie) => {
 		if (favoriteMovies.length >= 5) {
 			//TODO change this later to better error message
-			alert('only 5 movies allowed');
+			handleShowAlert(
+				AlertTypes.error,
+				'Only a maximum of five movies are allowed'
+			);
 			return;
 		}
 
@@ -38,7 +67,7 @@ const HomePage = () => {
 			favoriteMovies.find(favorite => favorite.id === movie.id) !== undefined
 		) {
 			//TODO change this later to better error message
-			alert('no duplicates allowed!');
+			handleShowAlert(AlertTypes.error, 'No duplicate movies allowed');
 			return;
 		}
 
@@ -55,7 +84,7 @@ const HomePage = () => {
 
 	const handleSaveClick = async () => {
 		if (favoriteMovies.length < 5) {
-			alert('must have 5 movies to save!');
+			handleShowAlert(AlertTypes.error, 'Must have 5 movies to save');
 			return;
 		}
 
@@ -68,7 +97,10 @@ const HomePage = () => {
 			const result = await postMovies(moviesToSave);
 			console.log('results from first save!', result);
 			if (result.error !== undefined) {
-				alert('something went wrong with the request!');
+				handleShowAlert(
+					AlertTypes.error,
+					`Something went wrong: ${result.error}`
+				);
 				return;
 			}
 
@@ -77,9 +109,14 @@ const HomePage = () => {
 			const result = await putMovies(moviesToSave);
 			if (typeof result.error === undefined) {
 				console.error('Error with put: ', result.error);
+				handleShowAlert(
+					AlertTypes.error,
+					`Something went wrong: ${result.error}`
+				);
 			}
 			//TODO add message banner at top of screen on success
-			console.log('movies saved successfully');
+			handleShowAlert(AlertTypes.success, 'Movies saved successfully');
+			// console.log('movies saved successfully');
 		}
 	};
 
@@ -153,15 +190,38 @@ const HomePage = () => {
 
 	return (
 		<VStack mt={10} spacing={12} bg={background}>
+			<Box minHeight='10px' width='100%' position='sticky' top='12%'>
+				<Center>
+					{showAlert && (
+						<LightMode>
+							<Alert
+								status={alertType}
+								position='sticky'
+								top='10%'
+								zIndex='5'
+								rounded={3}
+								width='25%'
+								textColor='black'
+							>
+								<AlertIcon />
+								{errorAlertMessage}
+							</Alert>
+						</LightMode>
+					)}
+				</Center>
+			</Box>
+
 			{/* Top 5 Movies area */}
 			<VStack w='full' minH={80}>
-				<HStack w='full' justify='space-between' px={7}>
-					<div></div>
-					<Text fontSize='4xl'>Your Top 5</Text>
+				<HStack w='full' justify='center' px={7}>
+					<Text fontSize='4xl' flex='2' textAlign='center'>
+						Your Movies
+					</Text>
 					<Button colorScheme='green' size='sm' onClick={handleSaveClick}>
 						Save Changes
 					</Button>
 				</HStack>
+
 				<HStack w='100%' p={5} spacing={5}>
 					{favoriteMovies.length > 0 &&
 						favoriteMovies.map((movie, index) => {

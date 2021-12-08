@@ -21,7 +21,7 @@ const NavBar = () => {
 	const { currentUser, setCurrentUser, searchQuery, setSearchQuery }: any =
 		useContext(HomePageContext);
 	let buttonColorMode = useColorModeValue('black', 'white');
-	const background = useColorModeValue('gray.100', 'gray.800');
+	const background = useColorModeValue('gray.100', 'gray.900');
 	const inputBackground = useColorModeValue('gray.100', 'gray.700');
 
 	const handleLogOut = async () => {
@@ -83,7 +83,7 @@ const NavBar = () => {
 			</Flex>
 			<Flex alignItems='center'>
 				<Stack direction={'row'} spacing={7} alignItems='center'>
-					<Button onClick={toggleColorMode}>
+					<Button onClick={toggleColorMode} bg={background}>
 						{colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
 					</Button>
 					<Button as={RouterLink} to='/about' variant='link'>

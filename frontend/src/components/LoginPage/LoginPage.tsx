@@ -15,7 +15,7 @@ type LoginProps = {
 
 const LoginPage = ({ submit }: LoginProps) => {
 	// const { toggleColorMode } = useColorMode();
-	const formBackground = useColorModeValue('gray.100', 'gray.700');
+	const formBackground = useColorModeValue('gray.200', 'gray.700');
 	const history = useHistory();
 
 	// const [email, setEmail] = useState('eric@gmail.com');
@@ -36,7 +36,12 @@ const LoginPage = ({ submit }: LoginProps) => {
 	};
 
 	return (
-		<Flex height='100vh' alignItems='center' justifyContent='center'>
+		<Flex
+			height='100vh'
+			alignItems='center'
+			justifyContent='center'
+			bg='gray.100'
+		>
 			<form onSubmit={handleSubmit}>
 				<VStack background={formBackground} p={12} rounded={6}>
 					<Heading mb={6}>Log In</Heading>
@@ -46,6 +51,7 @@ const LoginPage = ({ submit }: LoginProps) => {
 							placeholder='JohnDoe@gmail.com'
 							variant='filled'
 							mb={3}
+							bg='gray.200'
 							type='email'
 							value={email}
 							onChange={(e: FormEvent<HTMLInputElement>) =>
@@ -60,6 +66,7 @@ const LoginPage = ({ submit }: LoginProps) => {
 							placeholder='******'
 							variant='filled'
 							mb={6}
+							bg='gray.200'
 							type='password'
 							value={password}
 							onChange={(e: FormEvent<HTMLInputElement>) =>

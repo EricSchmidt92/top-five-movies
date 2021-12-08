@@ -15,7 +15,7 @@ const MovieCard = ({
 		<Box
 			h='500px'
 			w='300px'
-			boxShadow='lg'
+			boxShadow='xl'
 			rounded='md'
 			bg={cardBackground}
 			onClick={(event: SyntheticEvent) => handleMovieClick(event, movie)}
